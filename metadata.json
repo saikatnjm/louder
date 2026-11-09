@@ -1,0 +1,8 @@
+{
+  "uuid": "louder@saikat",
+  "name": "Louder",
+  "description": "A Quick Settings slider that boosts the output volume up to 300%.",
+  "shell-version": ["48", "49", "50"],
+  "url": "https://github.com/saikatnjm/louder",
+  "version": 1
+}

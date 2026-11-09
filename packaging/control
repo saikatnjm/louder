@@ -1,0 +1,11 @@
+Package: gnome-shell-extension-louder
+Version: @VERSION@
+Section: gnome
+Priority: optional
+Architecture: all
+Depends: gnome-shell (>= 48)
+Maintainer: Saikat Roy <saikathub95@gmail.com>
+Homepage: https://github.com/saikatnjm/louder
+Description: GNOME Shell extension to boost volume up to 300%
+ Adds a slider to the Quick Settings menu that sets the current output
+ device's volume anywhere from 0% to 300%, with the percentage shown.
