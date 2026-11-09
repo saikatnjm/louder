@@ -5,6 +5,9 @@ menu (top-right corner). It sets your speaker's volume anywhere from **0% to 300
 and shows the percentage next to the slider.
 
 - Goes past GNOME's 150% limit, up to 300%
+- Click the slider's speaker icon to turn the boost off: the slider greys out,
+  anything above 100% drops back to 100%, and only the regular volume slider
+  works. Click it again to turn the boost back on. Louder remembers your choice.
 - Sticks to 100% when you drag near it, so getting back to normal is easy
 - Follows whichever output is active (built-in speakers, Bluetooth, HDMI…)
 - Stays in sync with the volume keys and GNOME's own volume slider

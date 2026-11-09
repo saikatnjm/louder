@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.louder" path="/org/gnome/shell/extensions/louder/">
+    <key name="boost-enabled" type="b">
+      <default>true</default>
+      <summary>Volume boost on</summary>
+      <description>When off, the Louder slider is greyed out and the regular volume slider is in charge.</description>
+    </key>
+  </schema>
+</schemalist>

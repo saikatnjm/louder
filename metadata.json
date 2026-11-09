@@ -3,6 +3,7 @@
   "name": "Louder",
   "description": "A Quick Settings slider that boosts the output volume up to 300%.",
   "shell-version": ["48", "49", "50"],
+  "settings-schema": "org.gnome.shell.extensions.louder",
   "url": "https://github.com/saikatnjm/louder",
-  "version": 1
+  "version": 2
 }
