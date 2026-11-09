@@ -4,6 +4,7 @@
 // Click the slider's speaker icon to turn the boost on or off.
 
 import GObject from 'gi://GObject';
+import Gio from 'gi://Gio';
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -14,6 +15,7 @@ import * as Volume from 'resource:///org/gnome/shell/ui/status/volume.js';
 const MAX_BOOST = 3.0;   // 3.0 = 300%. Change this to allow more or less.
 const SNAP_TO_100 = 0.03; // the slider sticks to 100% when within 3% of it
 const OFF_OPACITY = 100;  // how faded the slider looks while boost is off (0-255)
+const OVER_AMP_KEY = 'allow-volume-above-100-percent';
 
 const BoostSlider = GObject.registerClass(
 class BoostSlider extends QuickSlider {
@@ -134,15 +136,31 @@ class BoostIndicator extends SystemIndicator {
 export default class Louder extends Extension {
     enable() {
         this._settings = this.getSettings();
+
+        // GNOME's own "Over-Amplification" setting lets the regular volume
+        // slider go to 150%. Follow our on/off switch: when boost is off, the
+        // regular slider stops at 100%. Put it back as it was on disable.
+        this._soundSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.sound'});
+        this._originalOverAmp = this._soundSettings.get_boolean(OVER_AMP_KEY);
+        this._syncOverAmp();
+        this._syncId = this._settings.connect('changed::boost-enabled', () => this._syncOverAmp());
+
         this._indicator = new BoostIndicator(this._settings);
         // 2 = full width, like GNOME's own volume slider.
         Main.panel.statusArea.quickSettings.addExternalIndicator(this._indicator, 2);
     }
 
+    _syncOverAmp() {
+        this._soundSettings.set_boolean(OVER_AMP_KEY, this._settings.get_boolean('boost-enabled'));
+    }
+
     disable() {
+        this._settings.disconnect(this._syncId);
+        this._soundSettings.set_boolean(OVER_AMP_KEY, this._originalOverAmp);
         this._indicator.quickSettingsItems.forEach(item => item.destroy());
         this._indicator.destroy();
         this._indicator = null;
         this._settings = null;
+        this._soundSettings = null;
     }
 }
