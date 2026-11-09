@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 176" width="640" height="176" role="img" aria-label="Louder slider with boost off: greyed out and showing Off, while the regular volume slider stops at 100%">
+  <defs>
+    <symbol id="spk" viewBox="0 0 24 24">
+      <path d="M3 9h4l5-4v14l-5-4H3z" fill="currentColor"/>
+      <path d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="boost" viewBox="0 0 24 24">
+      <path d="M1 9.5h3.5l4.5-3.8v12.6l-4.5-3.8H1z" fill="currentColor"/>
+      <path d="M12 9a4 4 0 0 1 0 6M14.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="M20 3.5v6M17 6.5h6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+  <rect x="0.5" y="0.5" width="639" height="175" rx="22" fill="#2b2b2f" stroke="#3a3a40"/>
+
+  <!-- Regular GNOME volume slider, capped at 100% -->
+  <use href="#spk" x="28" y="34" width="26" height="26" color="#e8e8ea"/>
+  <rect x="76" y="44" width="400" height="6" rx="3" fill="#4a4a52"/>
+  <rect x="76" y="44" width="400" height="6" rx="3" fill="#e8e8ea"/>
+  <circle cx="476" cy="47" r="11" fill="#ffffff"/>
+  <text x="608" y="53" text-anchor="end" font-family="Cantarell, Ubuntu, system-ui, sans-serif" font-size="17" fill="#9a9aa2">max 100%</text>
+
+  <line x1="24" y1="90" x2="616" y2="90" stroke="#3a3a40"/>
+
+  <!-- Louder slider, boost off (faded) -->
+  <circle cx="41" cy="131" r="22" fill="#3a3a40"/>
+  <use href="#boost" x="28" y="118" width="26" height="26" color="#e8e8ea"/>
+  <g opacity="0.4">
+    <rect x="76" y="128" width="400" height="6" rx="3" fill="#4a4a52"/>
+    <rect x="76" y="128" width="133" height="6" rx="3" fill="#e8e8ea"/>
+    <circle cx="209" cy="131" r="11" fill="#ffffff"/>
+    <text x="608" y="138" text-anchor="end" font-family="Cantarell, Ubuntu, system-ui, sans-serif" font-size="20" font-weight="700" fill="#ffffff">Off</text>
+  </g>
+</svg>

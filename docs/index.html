@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Louder: volume boost for GNOME</title>
+  <meta name="description" content="Louder is a tiny GNOME Shell extension that boosts your speaker volume up to 300% from the Quick Settings menu.">
+  <meta property="og:title" content="Louder: volume boost for GNOME">
+  <meta property="og:description" content="Boost your speaker volume up to 300% on GNOME, right from the Quick Settings menu.">
+  <link rel="icon" href="images/icon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --bg: #f6f6f8; --surface: #ffffff; --text: #1d1d22; --muted: #5d5d68;
+      --border: #e0e0e6; --accent: #1c6fd4; --accent-text: #ffffff; --code-bg: #eeeef2;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #18181b; --surface: #222226; --text: #ececf0; --muted: #a2a2ad;
+        --border: #34343a; --accent: #4a96ec; --accent-text: #0e1420; --code-bg: #2c2c31;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 17px/1.6 Cantarell, Ubuntu, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    a { color: var(--accent); }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+
+    header.top { border-bottom: 1px solid var(--border); }
+    header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; color: var(--text); text-decoration: none; }
+    .brand img { width: 28px; height: 28px; }
+    nav a { color: var(--muted); text-decoration: none; margin-left: 18px; font-size: 15px; }
+    nav a:hover { color: var(--text); }
+
+    .hero { text-align: center; padding-top: 64px; padding-bottom: 40px; }
+    .hero h1 { font-size: clamp(34px, 7vw, 54px); line-height: 1.1; margin: 0 0 16px; letter-spacing: -0.02em; }
+    .hero p { font-size: 20px; color: var(--muted); margin: 0 auto 28px; max-width: 34em; }
+    .buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-block; padding: 12px 22px; border-radius: 10px; font-weight: 700;
+      text-decoration: none; border: 1px solid var(--border); color: var(--text); background: var(--surface);
+    }
+    .btn.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+    .hero .shot { margin-top: 44px; }
+    .shot img { width: 100%; max-width: 640px; height: auto; border-radius: 22px; box-shadow: 0 12px 40px rgba(0,0,0,.18); }
+
+    section { padding: 44px 0; border-top: 1px solid var(--border); }
+    h2 { font-size: 28px; margin: 0 0 20px; letter-spacing: -0.01em; }
+    h3 { font-size: 19px; margin: 28px 0 8px; }
+    .muted { color: var(--muted); }
+
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; }
+    .card strong { display: block; margin-bottom: 4px; }
+    .card span { color: var(--muted); font-size: 15px; }
+
+    ol.steps { padding-left: 22px; }
+    ol.steps li { margin: 6px 0; }
+    pre {
+      background: var(--code-bg); border-radius: 10px; padding: 14px 16px; overflow-x: auto;
+      font: 14px/1.5 "Ubuntu Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    code { font-family: "Ubuntu Mono", ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--code-bg); padding: 1px 5px; border-radius: 5px; font-size: .92em; }
+    pre code { background: none; padding: 0; font-size: inherit; }
+    .note { border-left: 4px solid var(--accent); background: var(--surface); padding: 12px 16px; border-radius: 0 10px 10px 0; margin: 20px 0; }
+
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+    .tabs button {
+      font: inherit; font-size: 15px; padding: 8px 14px; border-radius: 999px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface); color: var(--text);
+    }
+    .tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+    .panel[hidden] { display: none; }
+
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .compare figure { margin: 0; }
+    .compare img { width: 100%; height: auto; border-radius: 16px; }
+    .compare figcaption { font-size: 15px; color: var(--muted); margin-top: 8px; }
+    @media (max-width: 640px) {
+      .compare { grid-template-columns: 1fr; }
+      nav a:not(.gh) { display: none; }
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 16px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: 600; }
+    .table-scroll { overflow-x: auto; }
+
+    details { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin: 10px 0; }
+    summary { cursor: pointer; font-weight: 700; }
+    details[open] summary { margin-bottom: 8px; }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 0 40px; color: var(--muted); font-size: 15px; text-align: center; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="#"><img src="images/icon.svg" alt="">Louder</a>
+      <nav>
+        <a href="#install">Install</a>
+        <a href="#use">How to use</a>
+        <a href="#faq">Help</a>
+        <a class="gh" href="https://github.com/saikatnjm/louder">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap hero">
+      <h1>Make your speakers louder</h1>
+      <p>A tiny GNOME extension that boosts your volume up to <strong>300%</strong>, right from the Quick Settings menu.</p>
+      <div class="buttons">
+        <a class="btn primary" href="https://github.com/saikatnjm/louder/releases/latest">Download</a>
+        <a class="btn" href="https://github.com/saikatnjm/louder">View on GitHub</a>
+      </div>
+      <div class="shot">
+        <img src="images/louder-on.svg" width="640" height="176" alt="The Louder slider set to 170%, below GNOME's regular volume slider">
+      </div>
+    </div>
+
+    <section>
+      <div class="wrap">
+        <h2>Features</h2>
+        <div class="features">
+          <div class="card"><strong>Up to 300%</strong><span>GNOME stops at 150%. Louder goes twice as far.</span></div>
+          <div class="card"><strong>Exact percentage</strong><span>See the volume as a number next to the slider.</span></div>
+          <div class="card"><strong>Snaps to 100%</strong><span>Getting back to normal volume is easy.</span></div>
+          <div class="card"><strong>On/off switch</strong><span>One click caps both sliders at 100%.</span></div>
+          <div class="card"><strong>Any speaker</strong><span>Built-in, Bluetooth, HDMI or USB: it follows the active one.</span></div>
+          <div class="card"><strong>Tiny</strong><span>About 150 lines of plain JavaScript, with no dependencies.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="install">
+      <div class="wrap">
+        <h2>Install</h2>
+        <p class="muted">Needs GNOME Shell 48, 49 or 50, for example Ubuntu 25.04 or newer.</p>
+
+        <div class="tabs" role="tablist">
+          <button role="tab" aria-selected="true" aria-controls="p-deb" id="t-deb">Ubuntu (.deb)</button>
+          <button role="tab" aria-selected="false" aria-controls="p-zip" id="t-zip">Any distro (.zip)</button>
+          <button role="tab" aria-selected="false" aria-controls="p-src" id="t-src">From source</button>
+        </div>
+
+        <div class="panel" id="p-deb" role="tabpanel" aria-labelledby="t-deb">
+          <ol class="steps">
+            <li>Download <code>gnome-shell-extension-louder_&lt;version&gt;_all.deb</code> from the <a href="https://github.com/saikatnjm/louder/releases/latest">latest release</a>.</li>
+            <li>Double-click it and press <strong>Install</strong> in App Center.</li>
+            <li>Log out and log back in.</li>
+            <li>Open the <strong>Extensions</strong> app and turn on <strong>Louder</strong>.</li>
+          </ol>
+        </div>
+
+        <div class="panel" id="p-zip" role="tabpanel" aria-labelledby="t-zip" hidden>
+          <ol class="steps">
+            <li>Download <code>louder@saikat.shell-extension.zip</code> from the <a href="https://github.com/saikatnjm/louder/releases/latest">latest release</a>.</li>
+            <li>Install it:
+              <pre><code>gnome-extensions install louder@saikat.shell-extension.zip</code></pre></li>
+            <li>Log out and log back in.</li>
+            <li>Turn it on in the <strong>Extensions</strong> app, or run:
+              <pre><code>gnome-extensions enable louder@saikat</code></pre></li>
+          </ol>
+        </div>
+
+        <div class="panel" id="p-src" role="tabpanel" aria-labelledby="t-src" hidden>
+          <pre><code>git clone https://github.com/saikatnjm/louder.git
+cd louder
+make install</code></pre>
+          <p>Log out and back in, then turn on <strong>Louder</strong> in the <strong>Extensions</strong> app.</p>
+        </div>
+
+        <div class="note">Louder is <strong>off after installing</strong>, and GNOME only loads new extensions after you log out and back in.</div>
+      </div>
+    </section>
+
+    <section id="use">
+      <div class="wrap">
+        <h2>How to use</h2>
+        <ol class="steps">
+          <li>Click the top-right corner of the screen to open <strong>Quick Settings</strong>.</li>
+          <li>Drag the <strong>Louder</strong> slider, below the regular volume slider, anywhere from 0% to 300%.</li>
+          <li><strong>Click its speaker icon</strong> to turn the boost on or off. Louder remembers your choice.</li>
+        </ol>
+
+        <div class="compare">
+          <figure>
+            <img src="images/louder-on.svg" width="640" height="176" alt="Boost on: the Louder slider is blue and set to 170%">
+            <figcaption><strong>Boost on:</strong> Louder goes to 300%, and the regular slider to 150%.</figcaption>
+          </figure>
+          <figure>
+            <img src="images/louder-off.svg" width="640" height="176" alt="Boost off: the Louder slider is greyed out and shows Off">
+            <figcaption><strong>Boost off:</strong> Louder is greyed out, and both sliders stop at 100%.</figcaption>
+          </figure>
+        </div>
+
+        <div class="note">Volumes above about 150–200% can make sound crackle, especially on small speakers. If that happens, turn it down.</div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="wrap">
+        <h2>Help</h2>
+        <details>
+          <summary>The Louder slider doesn't appear</summary>
+          <p>Log out and back in after installing, and make sure Louder is turned on in the Extensions app. Then check its state:</p>
+          <pre><code>gnome-extensions info louder@saikat</code></pre>
+          <p>If it says <code>State: ERROR</code>, this shows why:</p>
+          <pre><code>journalctl --user -b -g louder --no-pager | tail -20</code></pre>
+          <p>Please include that output when you <a href="https://github.com/saikatnjm/louder/issues">report a problem</a>.</p>
+        </details>
+        <details>
+          <summary>The regular slider still goes above 100% with boost off</summary>
+          <p>Another extension, often another volume booster, may be switching GNOME's "Over-Amplification" setting back on. Turn that extension off, then switch Louder's boost off and on once.</p>
+        </details>
+        <details>
+          <summary>Sound crackles at high volume</summary>
+          <p>The sound is louder than your speaker can play cleanly. This happens with every volume booster. Lower the volume until it stops.</p>
+        </details>
+        <details>
+          <summary>How do I uninstall it?</summary>
+          <p>If you installed the .deb:</p>
+          <pre><code>sudo apt remove gnome-shell-extension-louder</code></pre>
+          <p>Otherwise, remove it in the Extensions app. Louder puts GNOME's Over-Amplification setting back the way it was.</p>
+        </details>
+        <details>
+          <summary>Can I change the 300% limit?</summary>
+          <p>Yes. Edit <code>MAX_BOOST</code> near the top of <code>extension.js</code> (<code>3.0</code> means 300%), reinstall with <code>make install</code>, and log out and back in.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      Louder is free software under the <a href="https://github.com/saikatnjm/louder/blob/main/LICENSE">GPL-2.0-or-later</a> license ·
+      <a href="https://github.com/saikatnjm/louder/blob/main/CHANGELOG.md">Changelog</a> ·
+      <a href="https://github.com/saikatnjm/louder">Source code</a>
+    </div>
+  </footer>
+
+  <script>
+    // Install tabs
+    const tabs = document.querySelectorAll('.tabs [role="tab"]');
+    tabs.forEach(tab => tab.addEventListener('click', () => {
+      tabs.forEach(t => {
+        const selected = t === tab;
+        t.setAttribute('aria-selected', String(selected));
+        document.getElementById(t.getAttribute('aria-controls')).hidden = !selected;
+      });
+    }));
+  </script>
+</body>
+</html>
